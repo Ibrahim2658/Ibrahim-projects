@@ -1,0 +1,96 @@
+#include<iostream>
+#include<string>
+#include <cstdlib>
+#include <fstream>
+#include <ctime>
+
+using namespace std;
+string mem(){
+	 string mem = "@echo off\n"
+                "for /f \"tokens=2 delims==\" %%a in ('wmic os get TotalVisibleMemorySize /value ^| find \"=\"') do set \"totalMemoryKB=%%a\"\n"
+                "set /a \"totalMemoryGB=totalMemoryKB / 1024\"\n"
+                "set \"totalMemoryGB=%totalMemoryGB%\"\n"
+                "echo RAM: %totalMemoryGB% MB (%totalMemoryGB:~0,-3% GB)";
+	return mem;
+}
+void sysinf(){
+	cout<<"System Information:\n";
+	
+  	ofstream MyFile("D:\\abcd.bat");
+  	string ram = mem();
+  	string cpu = "@echo off\nfor /f \"tokens=2 delims==\" %%a in ('wmic cpu get name /value ^| find \"=\"') do echo CPU: %%a";
+  	
+	string gpu = "@echo off\n"
+	                  "for /f \"tokens=2 delims==\" %%a in ('wmic path win32_videocontroller get caption /value ^| find \"=\"') do set \"graphicCard=%%a\"\n"
+	                  "for /f \"tokens=2 delims==\" %%a in ('wmic path win32_videocontroller get AdapterRAM /value ^| find \"=\"') do set \"totalVRAM=%%a\"\n"
+	                  "set /a \"totalVRAMGB=totalVRAM / 1024 / 1024\"\n"
+	                  "set \"totalVRAMGB=%totalVRAMGB%\"\n"
+	                  "echo Graphic Card: %graphicCard% (%totalVRAMGB% MB)";
+	                  
+	string os = "@echo off\n"
+                     "for /f \"tokens=2 delims==\" %%a in ('wmic os get name /value ^| find \"=\"') do echo OS: %%a";
+  MyFile <<cpu<<endl<<ram<<endl<<gpu<<endl<<os<<endl;
+  // Close the file
+  MyFile.close();
+  
+  system("D:\\abcd.bat");
+  remove("D:\\abcd.bat");
+}
+
+void loadingBar() {
+    system("color 0A");
+
+    char a = 177, b = 219;
+
+    cout << "\n\n\n\n\n\n\n\n\n";
+    cout << "\n\n\n\n\t\t\t\t\t\tLoading...\n";
+    cout << "\t\t\t\t\t";
+
+    for (int i = 0; i < 26; i++)
+        cout << a;
+
+    cout << "\r";
+    cout << "\t\t\t\t\t";
+
+    // Simulate delay using clock ticks
+    clock_t start_time = clock();
+    while (clock() < start_time + 1000); // Approximately 1 second delay
+    for (int i = 0; i < 26; i++) {
+        cout << b;
+        start_time = clock();
+        while (clock() < start_time + 100); // Approximately 0.1 second delay
+    }
+}
+void cleanup(){
+	system("del /q/f/s %TEMP%\\*");
+	cout<<"\n\t\t<<Cleanup Successfully Completed>>\n";
+}
+void clrscreen(){
+	system("cls");
+	cout<<"\n   System Optimization App\n";
+}
+
+
+void testSysteminfo()
+{
+	sysinf();
+}
+
+void testLoadingBar()
+{
+	loadingBar();
+}
+
+void testCleanup()
+{
+	cleanup();
+}
+
+main()
+{
+	testSysteminfo();
+	testLoadingBar();
+	testCleanup();
+	
+	cout<<"\n\n\nAll test Passed ";
+}
